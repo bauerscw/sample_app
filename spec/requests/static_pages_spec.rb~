@@ -16,9 +16,6 @@ describe "Static Pages" do
       page.should have_selector('title',
         :text => "#{title}")
     end
-    it "should not have a custom page title" do
-      page.should_not have_selector('title',:text => '| Home')
-    end
   end
 
   describe "Help page" do
@@ -44,6 +41,9 @@ describe "Static Pages" do
     it "should have the base title" do
       page.should have_selector('title',
        :text => "#{title} | About Us")
+    end
+    it "should not have a custom page title" do
+      page.should_not have_selector('title',:text => '| About Us')
     end
   end
 
