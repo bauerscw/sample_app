@@ -29,11 +29,12 @@ describe User do
   it { should respond_to(:admin) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:microposts) }
+  it { should respond_to(:feed) }
 
   it { should be_valid }
   it { should_not be_admin }
 
-  describe "micropost assications" do
+  describe "micropost associations" do
     before { @user.save }
     let!(:older_micropost) do
       FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
@@ -52,6 +53,16 @@ describe User do
       microposts.each do |microposts|
         Micropost.find_by_id(micropost.id).should be_nil
       end
+    end
+
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+      end
+      
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include(unfollowed_post) }
     end
   end
 

@@ -42,7 +42,10 @@ describe "Authentication" do
           specify { response.should redirect_to(signin_path) }
         end
         describe "submitting to the destroy action" do
-          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          before do
+            micropost = FactoryGirl.create(:micropost)
+            delete micropost_path(micropost)
+          end
           specify { response.should redirect_to(signin_path) }
         end
       end
