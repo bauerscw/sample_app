@@ -1,21 +1,20 @@
 class MicropostsController < ApplicationController
-  before_action :signed_in_user, only: [:create, :destroy]
-  before_action :correct_user, only: :destroy
+  before_filter :authenticate
+  before_action :authorized_user, only: => :destroy
 
   def create
     @micropost = current_user.microposts.build(params[:micropost])
     if @micropost.save
-      flash[:success] = "Micropost created!"
-      redirect_to root_url
+      redirect_to root_path, :flash => { :success => "Micropost created!" }
     else
       @feed_items = []
-      render 'static_pages/home'
+      render 'pages/home'
     end
   end
 
   def destroy
     @micropost.destroy
-    redirect_to root_url
+    redirect_to root_path, :flash => { :success => "Micropost deleted!" }
   end
 
   private
@@ -24,8 +23,8 @@ class MicropostsController < ApplicationController
       params.require(:micropost).permit(:content)
     end
 
-    def correct_user
-      @micropost = current_user.microposts.find_by(id: params[:id])
-      redirect_to root_url if @micropost.nil?
+    def authorized_user
+      @micropost = current_user.microposts.find_by_id(params[:id])
+      redirect_to root_path if @micropost.nil?
     end
 end
